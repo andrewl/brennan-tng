@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Brennan LCARS</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="format-detection" content="date=no">
+	<link rel="stylesheet" type="text/css" href="assets/classic.css">
+</head>
+<body>
+	<audio id="beep" src="assets/beep1.mp3" preload="auto"></audio>
+	<section class="wrap-standard" id="column-3">
+		<div class="wrap">
+			<div class="left-frame-top">
+				<button onclick="playSoundAndRedirect('audio2', '#')" class="panel-1-button">MUSIC</button>
+				<div id="encoding" class="panel-2">Loading...</div>
+				<div style="border-top: var(--panel-border);" id="timing" class="panel-5"></div>
+			</div>
+			<div class="right-frame-top">
+				<main>
+				<h2 class="font-gold" id="track">Loading...</h2>
+				<h2 class="font-mars" id="artist">Loading...</h2>
+				<h3 id="album">Loading...</h4>
+				<div class="buttons">
+					<a href="#" onclick="commandPrev(); return false;" class="button-blue">Prev</a>
+					<a href="#" onclick="commandPlay(); return false;" class="button-gold">Play/Pause</a>
+					<a href="#" onclick="commandPrev(); return false;" class="button-lima-bean">Next</a>
+				</div>
+				<div class="volume-control">
+					<label for="volume" class="volume-label">Volume</label>
+					<input id="volume" type="range" min="0" max="64" value="0" onchange="commandSetVol(this.value);">
+				</div>
+				</main>
+				<div class="bar-panel first-bar-panel">
+					<div class="bar-1"></div>
+					<div class="bar-2"></div>
+					<div class="bar-3"></div>
+					<div class="bar-4"></div>
+					<div class="bar-5"></div>
+				</div>
+			</div>
+		</div>
+		<div class="wrap" id="gap">
+			<div class="left-frame">
+				<button onclick="topFunction();" id="topBtn"><span class="hop">screen</span> top</button>
+				<div>
+					<div class="panel-3">03<span class="hop">-111968</span></div>
+					<div class="panel-4">04<span class="hop">-041969</span></div>
+					<div class="panel-5">05<span class="hop">-1701D</span></div>
+					<div class="panel-6">06<span class="hop">-071984</span></div>
+					<div class="panel-7">07<span class="hop">-081940</span></div>
+					<div class="panel-8">08<span class="hop">-47148</span></div>
+					<div class="panel-9">09<span class="hop">-081966</span></div>
+				</div>
+				<div>
+					<div class="panel-10">10<span class="hop">-31</span></div>
+				</div>
+			</div>
+			<div class="right-frame">
+				<div class="bar-panel">
+					<div class="bar-6"></div>
+					<div class="bar-7"></div>
+					<div class="bar-8"></div>
+					<div class="bar-9"></div>
+					<div class="bar-10"></div>
+				</div>
+				<main>
+					<div class="accordion-wrapper" id="artistsContainer"></div>
+
+				</main>
+				<footer>
+					<!-- Your copyright information is only a suggestion and you can choose to delete it. -->
+				</footer> 
+			</div>
+		</div>
+	</section>	
+	<script type="text/javascript" src="/env.js"></script>
+	<script type="text/javascript" src="brennan-tng.js"></script>
+	<div class="headtrim"> </div>
+	<div class="baseboard"> </div>
+</body>
+</html>
