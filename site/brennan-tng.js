@@ -29,15 +29,15 @@ document.addEventListener('DOMContentLoaded', function() {
   setInterval(updateUI, 5000); // Update every 5 seconds
 });
 
-    //helper function to convert seconds to mm:s);
-    function formatTime(seconds) {
-      let mins = Math.floor(seconds / 60);
-      let secs = seconds % 60;
-      if (secs < 10) {
-        secs = '0' + secs;
-      }
-      return mins + ':' + secs;
-    }
+//helper function to convert seconds to mm:s);
+function formatTime(seconds) {
+  let mins = Math.floor(seconds / 60);
+  let secs = seconds % 60;
+  if (secs < 10) {
+    secs = '0' + secs;
+  }
+  return mins + ':' + secs;
+}
 
 
 function updateUI() {
@@ -45,50 +45,52 @@ function updateUI() {
   //fetch the status from http://music.lan/b2cgi.fcgi?status
   fetch(brennanURL + '/b2cgi.fcgi?status').then(response => response.json()).then(data => {
 
-      document.getElementById('timing').innerText = formatTime(data.timeIntoTrack) + ' / ' + formatTime(data.duration);
-      if (data.artist !== currentArtist || data.track !== currentTrack || data.album !== currentAlbum) {
-        document.getElementById('artist').innerText = data.artist;
-        document.getElementById('album').innerText = 'From "' + data.album + '"';
-        document.getElementById('track').innerText = data.track;
-        document.getElementById('encoding').innerText = data.compression;
-        currentArtist = data.artist;
-        currentTrack = data.track;
-        currentAlbum = data.album;
-        console.log('currentalbumid:', data.albumid);
+    document.getElementById('time-into').innerText = formatTime(data.timeIntoTrack);
+      document.getElementById('segue').innerText = "Segue " + data.segue;
+    if (data.artist !== currentArtist || data.track !== currentTrack || data.album !== currentAlbum) {
+      document.getElementById('artist').innerText = data.artist;
+      document.getElementById('album').innerText = 'From "' + data.album + '"';
+      document.getElementById('track').innerText = data.track;
+      document.getElementById('duration').innerText = formatTime(data.duration);
+      document.getElementById('encoding').innerText = data.compression;
+      currentArtist = data.artist;
+      currentTrack = data.track;
+      currentAlbum = data.album;
+      console.log('currentalbumid:', data.albumid);
 
-        //iterate over the artistsContainer to find the current album and remove the font-mars class from any other albums and add it to the current album
-        elements = document.getElementById('artistsContainer').getElementsByTagName('p');
-        console.log('Elements length:', elements.length);
-        console.log('Elements:', elements);
-        Array.from(elements).forEach(element => {
-          if (element.innerText.includes(currentAlbum)) {
-            element.classList.add('font-mars');
-            element.innerText = currentAlbum + " (now playing)";
-          } else {
-            element.classList.remove('font-mars');
-            element.innerText = element.innerText.replace(" (now playing)", "");
-          }
-        })
+      //iterate over the artistsContainer to find the current album and remove the font-mars class from any other albums and add it to the current album
+      elements = document.getElementById('artistsContainer').getElementsByTagName('p');
+      console.log('Elements length:', elements.length);
+      console.log('Elements:', elements);
+      Array.from(elements).forEach(element => {
+        if (element.innerText.includes(currentAlbum)) {
+          element.classList.add('font-mars');
+          element.innerText = currentAlbum + " (now playing)";
+        } else {
+          element.classList.remove('font-mars');
+          element.innerText = element.innerText.replace(" (now playing)", "");
+        }
+      })
 
-        //iterate over the artists to find the current artist and expand the accordion
-        elements = document.getElementById('artistsContainer').getElementsByClassName('artist');
-        console.log('Elements length:', elements.length);
-        console.log('Elements:', elements);
-        Array.from(elements).forEach(element => {
-          if (element.innerText === currentArtist) {
-            element.classList.add('active');
-            var accordionContent = element.nextElementSibling;
-            accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
-          } else {
-            element.classList.remove('active');
-            var accordionContent = element.nextElementSibling;
-            accordionContent.style.maxHeight = null;
-          }
-        })
-        
-      }
+      //iterate over the artists to find the current artist and expand the accordion
+      elements = document.getElementById('artistsContainer').getElementsByClassName('artist');
+      console.log('Elements length:', elements.length);
+      console.log('Elements:', elements);
+      Array.from(elements).forEach(element => {
+        if (element.innerText === currentArtist) {
+          element.classList.add('active');
+          var accordionContent = element.nextElementSibling;
+          accordionContent.style.maxHeight = accordionContent.scrollHeight + "px";
+        } else {
+          element.classList.remove('active');
+          var accordionContent = element.nextElementSibling;
+          accordionContent.style.maxHeight = null;
+        }
+      })
 
-      document.getElementById('volume').value = data.volume;
+    }
+
+    document.getElementById('volume').value = data.volume;
 
   }).catch(error => console.error('Error fetching status:', error));
 
@@ -132,7 +134,7 @@ function initialiseArtistsAndAlbums() {
       artistsContainer.appendChild(albumsList);
     });
 
-      // Accordion drop-down
+    // Accordion drop-down
     var acc = document.getElementsByClassName("accordion");
     var i;
 
@@ -196,14 +198,3 @@ function callGet(url) {
 function goToAnchor(anchorId) {
   window.location.hash = anchorId;
 }
-
-// LCARS keystroke sound (not to be used with hyperlinks)
-const LCARSkeystroke = document.getElementById('LCARSkeystroke');
-const allPlaySoundButtons = document.querySelectorAll('.playSoundButton');
-allPlaySoundButtons.forEach(button => {
-  button.addEventListener('click', function() {
-    LCARSkeystroke.pause();
-    LCARSkeystroke.currentTime = 0; // Reset to the beginning of the sound
-    LCARSkeystroke.play();
-  });
-});
