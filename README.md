@@ -13,7 +13,7 @@ The service is distributed as a Docker image and requires the URL of your Brenna
 ### Basic command
 
 ```bash
-docker run -e <url-to-brennan-b2> -p 8080:80 ghcr.io/andrewl/brennan-tng:latest
+docker run -e BRENNAN_URL=<url-to-brennan-b2> -p 8080:80 ghcr.io/andrewl/brennan-tng:latest
 ```
 
 ### Example
@@ -21,7 +21,7 @@ docker run -e <url-to-brennan-b2> -p 8080:80 ghcr.io/andrewl/brennan-tng:latest
 If your Brennan B2 is available at `http://192.168.0.5`, run:
 
 ```bash
-docker run -e http://192.168.0.5 -p 8080:80 ghcr.io/andrewl/brennan-tng:latest
+docker run -e BRENNAN_URL=http://192.168.0.5 -p 8080:80 ghcr.io/andrewl/brennan-tng:latest
 ```
 
 Then open your browser and navigate to:
