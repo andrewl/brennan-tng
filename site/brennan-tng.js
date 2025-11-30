@@ -26,7 +26,7 @@ function topFunction() {
 document.addEventListener('DOMContentLoaded', function() {
   updateUI();
   initialiseArtistsAndAlbums();
-  setInterval(updateUI, 5000); // Update every 5 seconds
+  setInterval(updateUI, 2000); // Update every 2 seconds
 });
 
 //helper function to convert seconds to mm:s);
@@ -45,9 +45,32 @@ function updateUI() {
   //fetch the status from http://music.lan/b2cgi.fcgi?status
   fetch(brennanURL + '/b2cgi.fcgi?status').then(response => response.json()).then(data => {
 
+    document.getElementById('volume').value = data.volume;
+
+    if (data.punchThru === true) {
+      data.artist = "Punch Thru";
+      data.album = "Punch Thru";
+      data.track = "Punch Thru";
+      currentArtist = data.artist;
+      currentTrack = data.track;
+      currentAlbum = data.album;
+
+      document.getElementById('time-into').innerText = "";
+      document.getElementById('segue').innerText = "";
+      document.getElementById('duration').innerText = "";
+      document.getElementById('encoding').innerText = "";
+      document.getElementById('track').innerText = "Music being controlled externally";
+      document.getElementById('artist').innerText = "Could be Borg";
+      document.getElementById('album').innerText = "Probably Spotify";
+      return;
+
+    }
+
     document.getElementById('time-into').innerText = formatTime(data.timeIntoTrack);
-      document.getElementById('segue').innerText = "Segue " + data.segue;
+    document.getElementById('segue').innerText = "Segue " + data.segue;
+
     if (data.artist !== currentArtist || data.track !== currentTrack || data.album !== currentAlbum) {
+
       document.getElementById('artist').innerText = data.artist;
       document.getElementById('album').innerText = 'From "' + data.album + '"';
       document.getElementById('track').innerText = data.track;
@@ -90,7 +113,6 @@ function updateUI() {
 
     }
 
-    document.getElementById('volume').value = data.volume;
 
   }).catch(error => console.error('Error fetching status:', error));
 
@@ -99,7 +121,7 @@ function updateUI() {
 function initialiseArtistsAndAlbums() {
 
   //load artists and albums from http://music.lan/b2gci.fcgi?search&albums=Y&tracks=N&radio=N&video=N&offset=0&count=1000&string=
-  fetch(brennanURL + '/b2cgi.fcgi?search&albums=Y&tracks=N&radio=N&video=N&offset=0&count=1000&string=').then(response => response.json()).then(data => {
+  fetch(brennanURL + '/b2cgi.fcgi?search&albums=Y&tracks=N&radio=N&video=N&offset=0&count=50000&string=').then(response => response.json()).then(data => {
     //The artists are the objects which don't have an "album" property
     artists = data.filter(item => !item.hasOwnProperty('album'));
 
@@ -118,8 +140,7 @@ function initialiseArtistsAndAlbums() {
       //Find albums for this artist
       let albums = data.filter(item => item.hasOwnProperty('album') && item.artist === artist.artist);
 
-      //sort the albums alphabetically
-      albums.sort((a, b) => a.album.localeCompare(b.album));
+      albums = albums.sort((a, b) => a.album.localeCompare(b.album));
 
       let albumsList = document.createElement('div');
       albumsList.classList.add('accordionContent');
