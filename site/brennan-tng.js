@@ -39,6 +39,27 @@ function formatTime(seconds) {
   return mins + ':' + secs;
 }
 
+function updateUIForRadio(status) {
+
+
+  if (status.artist !== currentArtist || status.track !== currentTrack || status.album !== currentAlbum) {
+    currentTrack = status.station;
+    currentArtist = status.station;
+    currentAlbum = status.radioStatus;
+
+    document.getElementById('time-into').innerText = "";
+    document.getElementById('segue').innerText = "";
+    document.getElementById('duration').innerText = "";
+    document.getElementById('encoding').innerText = "";
+    document.getElementById('track').innerText = currentTrack;
+    document.getElementById('artist').innerText = ""
+    document.getElementById('album').innerText = currentAlbum;
+  }
+  return;
+
+}
+
+
 
 function updateUI() {
 
@@ -46,6 +67,11 @@ function updateUI() {
   fetch(brennanURL + '/b2cgi.fcgi?status').then(response => response.json()).then(data => {
 
     document.getElementById('volume').value = data.volume;
+
+    if (data.source === "Internet Radio") {
+      updateUIForRadio(data);
+      return;
+    }
 
     if (data.punchThru === true) {
       data.artist = "Punch Thru";
