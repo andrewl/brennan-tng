@@ -26,6 +26,7 @@ function topFunction() {
 document.addEventListener('DOMContentLoaded', function() {
   updateUI();
   initialiseArtistsAndAlbums();
+  initialisePresets();
   setInterval(updateUI, 2000); // Update every 2 seconds
 });
 
@@ -144,6 +145,44 @@ function updateUI() {
 
 }
 
+function initialisePresets() {
+
+  //get the list of playlists from /b2gci.fcgi?listplaylists
+  fetch(brennanURL + '/b2cgi.fcgi?listplaylists').then(response => response.json()).then(playlists => {
+
+    //get presets from /b2gci.fcgi?getPresets
+    //iterate over each one creating a new sibling to the 'encoding' element with a div of either class panel-6 or panel-7
+    fetch(brennanURL + '/b2cgi.fcgi?getPresets').then(response => response.json()).then(data => {
+      let presetsElement = document.getElementById('presets');
+      //remove any presets whose name is "Empty" and reverse sort alphabetically by name
+      data = data.filter(preset => preset.name !== "Empty");
+      data.forEach((preset, index) => {
+
+        console.log('Processing preset:', preset);
+
+        //if the preset's url is 'Playlist' then get the id from the playlists list
+        if (preset.url === "Playlist") {
+          let matchingPlaylist = playlists.find(playlist => playlist.name === preset.name);
+          if (matchingPlaylist) {
+            preset.id = matchingPlaylist.id;
+          }
+        }
+        else {
+          preset.id = (6000000 + index).toString();
+          console.log('Preset ' + preset.name + ' assigned id ' + preset.id);
+        }
+
+        let presetDiv = document.createElement('div');
+        presetDiv.classList.add(index % 2 === 0 ? 'panel-6' : 'panel-7');
+        presetDiv.innerText = preset.name;
+        presetDiv.onclick = function() { playId(preset.id); };
+        presetsElement.parentNode.insertBefore(presetDiv, presetsElement.prevSibling);
+      });
+    }).catch(error => console.error('Error fetching presets:', error));
+
+  }).catch(error => console.error('Error fetching playlists:', error));
+}
+
 function initialiseArtistsAndAlbums() {
 
   //load artists and albums from http://music.lan/b2gci.fcgi?search&albums=Y&tracks=N&radio=N&video=N&offset=0&count=1000&string=
@@ -238,7 +277,7 @@ function callGet(url) {
       updateUI();
       return text;
     })
-    .catch(err => console.error("GET error", err));
+      .catch(err => console.error("GET error", err));
 }
 
 
