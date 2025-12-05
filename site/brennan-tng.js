@@ -40,6 +40,21 @@ function formatTime(seconds) {
   return mins + ':' + secs;
 }
 
+function updateUIForNotPlaying() {
+
+    currentTrack = "Silence";
+    currentArtist = "...";
+    currentAlbum = "...";
+
+    document.getElementById('time-into').innerText = "";
+    document.getElementById('segue').innerText = "";
+    document.getElementById('duration').innerText = "";
+    document.getElementById('encoding').innerText = "";
+    document.getElementById('track').innerText = currentTrack;
+    document.getElementById('artist').innerText = currentArtist;
+    document.getElementById('album').innerText = currentAlbum;
+}
+
 function updateUIForRadio(status) {
 
 
@@ -68,6 +83,11 @@ function updateUI() {
   fetch(brennanURL + '/b2cgi.fcgi?status').then(response => response.json()).then(data => {
 
     document.getElementById('volume').value = data.volume;
+
+    if (data.playing === 0) {
+      updateUIForNotPlaying();
+      return;
+    }
 
     if (data.source === "Internet Radio") {
       updateUIForRadio(data);
